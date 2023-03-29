@@ -1,28 +1,44 @@
+import sys
 from collections import deque
-from queue import PriorityQueue
-
-class Priority:
-    deq = deque
-    def put(self, item: str, priority: int):
-        pass
 def main():
-    deq = PriorityQueue()
+    deq = deque()
     while True:
-        command = input().split()
+        command = sys.stdin.readline().split()
         if len(command) == 3:
-            deq.put(int(command[2]), command[1])
+            deq.append((int(command[2]), command[1]))
+            index = len(deq) - 2
+            while index > -1:
+                if deq[index][0] >= deq[index+1][0]:
+                    break
+                deq[index], deq[index+1] = deq[index+1], deq[index]
+                index-=1
             print('ok')
         elif len(command) == 2:
-            if command[1] == 'top':
-                print(-1 if deq.empty() else deq.get())
+            if len(deq) == 0:
+                print(-1)
+            elif command[1] == 'top':
+                print(deq.popleft()[1])
             elif command[0] == 'pop':
-                print(deq.get(int(command[1])))
+                for i in range(len(deq)-1, 0, -1):
+                    if deq[i][0] == int(command[1]) and deq[i-1][0] != int(command[1]):
+                        deq[i], deq[i-1] = deq[i-1], deq[i]
+                print(deq.popleft()[1] if deq[0][0] == int(command[1]) else -1)
             else:
-                a = deq.get(int(command[1]))
-                print(a if not a == '' else -1)
+                count = 0
+                while True:
+                    for i in range(len(deq) - 1, 0, -1):
+                        if deq[i][0] == int(command[1]) and deq[i - 1][0] != int(command[1]):
+                            deq[i], deq[i - 1] = deq[i - 1], deq[i]
+                    if len(deq)!=0 and deq[0][0] == int(command[1]):
+                        print(deq.popleft()[1], end=' ')
+                        count += 1
+                    else:
+                        break
+                print(-1 if count == 0 else '')
         elif command[0] == 'size':
-            print(deq.qsize())
+            print(len(deq))
         elif command[0] == 'clear':
+            deq.clear()
             print('ok')
         else:
             print('bye')
