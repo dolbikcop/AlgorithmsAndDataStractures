@@ -1,74 +1,44 @@
-def merge(arr, l, m, r):
+from typing import List
+
+
+def merge(arr: List[int], l, m, r, buf: List[int]):
     global global_counter
 
-    result = [0] * (r - l + 1)
+    p1 = l
+    p2 = m
+    rp = 0
 
-    # Merge the temp arrays back into arr[l..r]
-    i = l  # Initial index of first subarray
-    j = m+1 # Initial index of second subarray
-
-    k = 0
-    while i <= m and j <= r:
-        if arr[i] > arr[j]:
-            result[k] = arr[i]
-            global_counter += i - l
-            i += 1
+    while p1 < m or p2 < r:
+        if p1 == m:
+            buf[rp] = arr[p2]
+            p2 += 1
+        elif p2 == r:
+            buf[rp] = arr[p1]
+            p1 += 1
+            global_counter += r - p2
+        elif arr[p1] >= arr[p2]:
+            buf[rp] = arr[p1]
+            p1 += 1
+            global_counter += r - p2
         else:
-            result[k] = arr[j]
-            j += 1
-        k+=1
-
-    # Copy the remaining elements of L[], if there
-    # are any
-    while i <= m:
-        result[k] = arr[i]
-        i += 1
-        k+=1
-
-
-    # Copy the remaining elements of R[], if there
-    # are any
-    while j <= r:
-        result[k] = arr[j]
-        global_counter += i - l - 1
-        j += 1
-        k+=1
-
-    c = 0
-    for item in result:
-        arr[l+c] = item
-        c += 1
-
-# l is for left index and r is right index of the
-# sub-array of arr to be sorted
-
-
-def mergeSort(arr, l, r):
-    if l < r:
+            buf[rp] = arr[p2]
+            p2 += 1
+        rp += 1
+    for i in range(l, r):
+        arr[i] = buf[i - l]
+def mergeSort(arr, l, r, buf):
+    if l + 1 < r:
         m = l + (r - l) // 2
-
-        mergeSort(arr, l, m)
-        mergeSort(arr, m + 1, r)
-
-        merge(arr, l, m, r)
+        mergeSort(arr, l, m, buf)
+        mergeSort(arr, m, r, buf)
+        merge(arr, l, m, r, buf)
 
 global_counter = 0
-
-# Driver code to test above
-arr = [12, 11, 13, 5, 6, 7]
-n = len(arr)
-
-print(*arr)
-mergeSort(arr, 0, n - 1)
-print(*arr)
-print(global_counter)
-
-global_counter = 0
-arr3 = [1, 1, 2, 3, 4, 179]
-#arr3 = [179, 4, 3, 2, 1, 1]
-print(*arr3)
-
-mergeSort(arr3, 0, n - 1)
-print(*arr3)
-print(global_counter)
-# This code is contributed by Mohit Kumra
+def main():
+    n = int(input())
+    arr = []
+    for i in range(n):
+        arr.append(int(input()))
+    mergeSort(arr, 0, n, [0]*n)
+    print(global_counter)
+main()
