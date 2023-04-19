@@ -27,7 +27,7 @@ def create_meal(arr: List[int], money: int, calories: int, ind: int, menu: List[
             global_count_calorie = calories
     else:
         if menu[ind].price <= money:
-            create_meal(arr + [ind+1], money - menu[ind].price, calories + menu[ind].calories, ind + 1, menu)
+            create_meal(arr + [ind + 1], money - menu[ind].price, calories + menu[ind].calories, ind + 1, menu)
         create_meal(arr, money, calories, ind+1, menu)
 
 
