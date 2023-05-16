@@ -1,9 +1,13 @@
 from typing import List
+
+
 def main():
     inp = input()
     arr = list(map(int, inp.split()))
     qsort(arr, 0, len(arr))
     print(*arr)
+
+
 def partition(arr: List[int], l: int, r: int) -> int:
     if r - l < 1:
         return l
@@ -23,13 +27,16 @@ def partition(arr: List[int], l: int, r: int) -> int:
             j -= 1
         else:
             break
-    arr[i], arr[r-1 if r > 0 else 0] = arr[r-1 if r > 0 else 0], arr[i]
+    arr[i], arr[r - 1 if r > 0 else 0] = arr[r - 1 if r > 0 else 0], arr[i]
     return i
+
+
 def qsort(arr: List[int], l: int, r: int):
     if r - l <= 1:
         return
     m = partition(arr, l, r)
     qsort(arr, l, m)
     qsort(arr, m + 1, r)
+
 
 main()
