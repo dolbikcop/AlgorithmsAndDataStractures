@@ -33,18 +33,12 @@ class BinaryTree:
 
     def show(self, current: Node, hasBro=False, ends = []):
         if current is not None:
-            for i, val in enumerate(ends):
-                if i == current.height: break
-                if i == current.height - 1:
-                    print(f'{"├" if hasBro else "└"}', end='───')
-                else:
-                    print(f'{"│" if val else " "}', end='   ')
+            for i in range(len(ends)-1):
+                print(f'{"│" if ends[i] else " "}', end='   ')
+            print(f'{"├" if hasBro else "└"}', end='───')
             print(current.value)
-            if len(ends) - 1 < current.height: ends.append(False)
-            ends[current.height] = True
-            self.show(current.left, current.right is not None, ends)
-            ends[current.height] = False
-            self.show(current.right, False, ends)
+            self.show(current.left, current.right is not None, ends + [True])
+            self.show(current.right, False, ends + [False])
 
 
 def main():

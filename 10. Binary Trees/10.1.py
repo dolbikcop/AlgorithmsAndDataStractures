@@ -12,11 +12,9 @@ class Node:
 
 class BinaryTree:
     root: Node
-    ends: List[bool]
 
-    def __init__(self, root: Node = None, buff: int = 1):
+    def __init__(self, root: Node = None):
         self.root = root
-        self.ends = [False] * buff
 
     def from_array(self, arr: List[int], l, r: int, height=0):
         if l + 1 > r:
@@ -33,29 +31,27 @@ class BinaryTree:
             t.right.parent = t
         return t
 
-    def show(self, current: Node, hasBro=False):
-        for i, val in enumerate(self.ends):
-            if i == current.height:
-                print(current.value)
-                break
-            if i == current.height - 1:
-                print(f'{"├" if hasBro else "└"}', end='───')
-            else:
-                print(f'{"│" if val else " "}', end='   ')
-        if current.left is not None:
-            self.ends[current.height] = True
-            self.show(current.left, current.right is not None)
-        if current.right is not None:
-            self.ends[current.height] = False
-            self.show(current.right)
+    def show(self, current: Node, ends: List[bool]):
+        if current is None:
+            return
+        predict = ''
+        if len(ends) != 0:
+            for i in range(len(ends) - 1):
+                predict += "│   " if ends[i] else "    "
+
+            predict += "├───" if ends[len(ends)-1] else "└───"
+
+        print(predict + str(current.value))
+        self.show(current.left, ends + [True])
+        self.show(current.right, ends + [False])
 
 
 def main():
     arr = list(map(int, input().split()))
-    tree = BinaryTree(buff=len(arr))
+    tree = BinaryTree()
     tree.root = tree.from_array(arr, 0, len(arr))
     if tree.root is not None:
-        tree.show(tree.root)
+        tree.show(tree.root, [])
 
 
 main()
