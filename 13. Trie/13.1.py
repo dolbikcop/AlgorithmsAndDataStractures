@@ -1,47 +1,63 @@
-from typing import List
-
-
-def main():
-    not_exit = True
-    while not_exit:
-        command = input().split()
-        if len(command) == 0:
-            not_exit = False
-        elif len(command) == 1:
-            pass # add
+def main() -> None:
+    trie = Trie()
+    can_move = True
+    while can_move:
+        command, *args = input().split()
+        if command == "add":
+            result = trie.add(args[0])
+        elif command == "get":
+            result = trie.get(args[0], int(args[1]))
         else:
-            pass # get
+            result = "bye"
+            can_move = False
+        print(result)
+
 
 class Node:
-    def __init__(self):
-        self.alphabet = [0] * 256
+    def __init__(self) -> None:
         self.is_end = False
+        self.child = {}
 
-    def get_child(self, symbol: str):
-        index = ord(symbol)
-        if self.alphabet[index] == 0:
-            self.alphabet[index] = Node()
-        return self.alphabet[index]
+    def get_child(self, i):
+        if i not in self.child:
+            self.child[i] = Node()
+        return self.child[i]
+
 
 class Trie:
-    def __init__(self):
+    def __init__(self) -> None:
         self.root = Node()
 
-    def add(self, word: str):
-        child = self.root
-        for i in word:
-            child = child.get_child(i)
-        child.is_end = True
+    def get(self, pref: str, count: int) -> str:
+        node = self.root
+        result_words = []
+        for i in pref:
+            if i not in node.child:
+                return 'empty'
+            node = node.child[i]
 
-    def print_child(self, word: str, count: int):
-        c_node = self.root
-        for i in word:
-            c_node = c_node.get_child(i)
+        self.get_all_children(node, pref, result_words)
 
-        while count != 0:
-            for i in range(0, 256):
-                if c_node.alphabet[i] != 0:
-                        c_node.
-    def __print_child(self, results: List[str], word: List[str], count: int, node):
-        if node != 0:
-            
+        result = []
+        for word in result_words:
+            if len(word) > len(pref):
+                result.append(word)
+
+        result = sorted(result)[:count]
+        return ' '.join(result) if len(result) != 0 else "empty"
+
+    def get_all_children(self, node: Node, word: str, result: []) -> None:
+        if node.is_end:
+            result.append(word)
+        for char in node.child.keys():
+            self.get_all_children(node.child[char], word + char, result)
+
+    def add(self, s: str) -> str:
+        node = self.root
+        for i in s:
+            node = node.get_child(i)
+        node.is_end = True
+        return "ok"
+
+
+main()
